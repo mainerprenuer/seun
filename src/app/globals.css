@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+:root {
+  --background: #060d2a;
+  --foreground: #ffffff;
+  --ink:    #03081e;
+  --abyss:  #060d2a;
+  --royal:  #0c1f6b;
+  --cobalt: #1540b8;
+  --azure:  #2563eb;
+  --periwinkle: #6b93f5;
+  --veil:   #b4ceff;
+  --frost:  #deeaff;
+  --chalk:  #f5f8ff;
+  --white:  #ffffff;
+  --gold:   #e8c96a;
+  --gold2:  #c9a94a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-gold: var(--gold);
+  --color-gold2: var(--gold2);
+  --color-periwinkle: var(--periwinkle);
+  --color-veil: var(--veil);
+  --color-frost: var(--frost);
+  --color-abyss: var(--abyss);
+  --color-royal: var(--royal);
+  --color-cobalt: var(--cobalt);
+  --color-azure: var(--azure);
+  --font-serif: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  --font-outfit: var(--font-outfit), 'Outfit', sans-serif;
+}
+
+body {
+  background: var(--abyss);
+  color: var(--white);
+  font-family: var(--font-outfit);
+  overflow-x: hidden;
+}
+
+/* UTILITIES */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes riseIn { 
+  from { opacity: 0; transform: translateY(24px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+@keyframes fadeScale { 
+  from { opacity: 0; transform: scale(.96); } 
+  to { opacity: 1; transform: scale(1); } 
+}
+
+@keyframes twinkle { 
+  0%, 100% { opacity: var(--lo); transform: scale(1); } 
+  50% { opacity: var(--hi); transform: scale(1.6); } 
+}
+
+@keyframes marquee { 
+  to { transform: translateX(-50%); } 
+}
+
+@keyframes sway1 { 
+  0%, 100% { transform: rotate(-6deg) translateY(0); } 
+  50% { transform: rotate(-4deg) translateY(-10px); } 
+}
+
+@keyframes sway2 { 
+  0%, 100% { transform: rotate(5deg) translateY(0); } 
+  50% { transform: rotate(3deg) translateY(-8px); } 
+}
+
+@keyframes floatQ { 
+  0%, 100% { transform: translateY(0); } 
+  50% { transform: translateY(-10px); } 
+}
+
+.rv { 
+  opacity: 0; 
+  transform: translateY(30px); 
+  transition: opacity .8s ease, transform .8s ease; 
+}
+
+.rv.on { 
+  opacity: 1; 
+  transform: translateY(0); 
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-outfit {
+  font-family: var(--font-outfit);
+}
