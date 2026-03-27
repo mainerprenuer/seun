@@ -28,6 +28,7 @@ interface Post {
   slug: string;
   content: string;
   category: string;
+  featuredImage?: string | null;
   createdAt: string;
   author: {
     name: string | null;
@@ -299,11 +300,21 @@ export default function BlogArchivePremium({ initialPosts, categoryCounts }: Blo
                 >
                   <div className={viewMode === "list" ? "flex flex-col md:flex-row gap-6 md:gap-8 items-start" : "space-y-6"}>
                     {/* Thumbnail placeholder or icon */}
-                    <div className={`${viewMode === "list" ? 'w-20 md:w-24 h-20 md:h-24' : 'w-full h-48'} bg-gradient-to-br from-royal to-indigo-900 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden relative group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition-all`}>
-                      <span className={viewMode === "list" ? "text-3xl md:text-4xl" : "text-6xl"}>
-                        {post.category === "Education" ? "🎓" : post.category === "Health" ? "💊" : post.category === "Tech" ? "💻" : post.category === "Lifestyle" ? "🌸" : "📰"}
-                      </span>
-                      <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className={`${viewMode === "list" ? 'w-20 md:w-24 h-20 md:h-24' : 'w-full h-48'} bg-gradient-to-br from-[#060d2a] to-[#0b1e70] rounded-2xl flex items-center justify-center shrink-0 overflow-hidden relative group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition-all`}>
+                      {post.featuredImage ? (
+                        <Image 
+                          src={post.featuredImage} 
+                          alt={post.title} 
+                          fill 
+                          sizes={viewMode === "list" ? "96px" : "(max-width: 768px) 100vw, 50vw"}
+                          className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                        />
+                      ) : (
+                        <span className={viewMode === "list" ? "text-3xl md:text-4xl" : "text-6xl"}>
+                          {post.category === "Education" ? "🎓" : post.category === "Health" ? "💊" : post.category === "Tech" ? "💻" : post.category === "Lifestyle" ? "🌸" : "📰"}
+                        </span>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#060d2a]/60 opacity-0 group-hover:opacity-100 transition-all duration-500" />
                     </div>
 
                     <div className="flex-1 space-y-3 md:space-y-4">

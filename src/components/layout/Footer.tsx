@@ -53,6 +53,11 @@ export default function Footer() {
             <li><Link href="/blog" className="text-[0.88rem] text-veil hover:text-white transition-colors">The Archive</Link></li>
             <li><Link href="/#newsletter" className="text-[0.88rem] text-veil hover:text-white transition-colors">Subscribe</Link></li>
             <li><Link href="/#contact" className="text-[0.88rem] text-veil hover:text-white transition-colors">Work with Me</Link></li>
+            <li className="pt-2">
+              <Link href="/admin" className="text-gold font-bold text-[0.65rem] uppercase tracking-widest bg-gold/10 px-3 py-1.5 rounded border border-gold/30 hover:bg-gold hover:text-[#03081e] transition-colors inline-block text-center shadow-lg" title="Login to Admin Portal">
+                Admin Access
+              </Link>
+            </li>
           </ul>
         </div>
 

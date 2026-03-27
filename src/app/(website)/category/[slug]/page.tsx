@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Post } from "@prisma/client";
+import Image from "next/image";
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -56,16 +57,26 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                 href={`/blog/${post.slug}`}
                 className="group bg-white/5 border border-periwinkle/12 rounded-2xl overflow-hidden flex flex-col hover:-translate-y-1.5 hover:border-periwinkle/30 hover:shadow-[0_28px_70px_rgba(0,0,0,0.45)] transition-all duration-400"
               >
-                <div className="relative h-48 overflow-hidden bg-gradient-to-br from-indigo-900 to-royal flex items-center justify-center">
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#060d2a]/90 transition-transform duration-700 group-hover:scale-105" />
-                  <span className="z-10 text-5xl transition-transform duration-500 group-hover:scale-110">
-                    {categoryName === "Education" && "🎓"}
-                    {categoryName === "Health" && "💊"}
-                    {categoryName === "Tech" && "🤖"}
-                    {categoryName === "Lifestyle" && "🌺"}
-                    {categoryName === "News" && "📰"}
-                    {categoryName === "Stories" && "📖"}
-                  </span>
+                <div className="relative h-48 overflow-hidden bg-gradient-to-br from-[#060d2a] to-[#0b1e70] flex items-center justify-center">
+                  {post.featuredImage ? (
+                    <Image 
+                      src={post.featuredImage} 
+                      alt={post.title} 
+                      fill 
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                    />
+                  ) : (
+                    <span className="z-10 text-5xl transition-transform duration-500 group-hover:scale-110">
+                      {categoryName === "Education" && "🎓"}
+                      {categoryName === "Health" && "💊"}
+                      {categoryName === "Tech" && "💻"}
+                      {categoryName === "Lifestyle" && "🌸"}
+                      {categoryName === "News" && "📰"}
+                      {categoryName === "Stories" && "📖"}
+                    </span>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#060d2a]/60 opacity-0 group-hover:opacity-100 transition-all duration-500" />
                 </div>
                 <div className="p-8 flex flex-col flex-1">
                   <h3 className="font-serif text-xl leading-tight mb-4 group-hover:text-periwinkle transition-colors">

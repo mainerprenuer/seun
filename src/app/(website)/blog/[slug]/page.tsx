@@ -23,14 +23,23 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
+export default async function BlogPost({ 
+  params,
+  searchParams,
+}: { 
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const { slug } = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const isPreview = resolvedSearchParams.preview === 'true';
+
   const post = await prisma.post.findUnique({
     where: { slug },
     include: { author: { select: { name: true } } },
   });
 
-  if (!post || !post.published) {
+  if (!post || (!post.published && !isPreview)) {
     notFound();
   }
 

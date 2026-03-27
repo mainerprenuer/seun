@@ -10,17 +10,67 @@ interface Post {
   title: string;
   slug: string;
   content: string;
+  featuredImage?: string | null;
   category?: string;
   createdAt: Date;
 }
 
-export default function LandingPageContent({ posts }: { posts: Post[] }) {
+export default function LandingPageContent({ posts, categoryCounts = {} }: { posts: Post[], categoryCounts?: Record<string, number> }) {
   const [mx, setMx] = useState(0);
   const [my, setMy] = useState(0);
   const [rx, setRx] = useState(0);
   const [ry, setRy] = useState(0);
   const [scrolled, setScrolled] = useState(0);
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [newsletterStatus, setNewsletterStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [contactStatus, setContactStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+
+  const handleNewsletterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setNewsletterStatus("submitting");
+    const emailInput = e.currentTarget.elements.namedItem("email") as HTMLInputElement;
+    if (!emailInput?.value) return setNewsletterStatus("error");
+
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/seunbayonle@gmail.com", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _subject: "New Newsletter Subscription Request",
+          email: emailInput.value,
+        })
+      });
+      if (res.ok) setNewsletterStatus("success");
+      else setNewsletterStatus("error");
+    } catch {
+      setNewsletterStatus("error");
+    }
+  };
+
+  const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setContactStatus("submitting");
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/seunbayonle@gmail.com", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _subject: "New Contact Request from SeunInsight",
+          ...data
+        })
+      });
+      if (res.ok) {
+        setContactStatus("success");
+        e.currentTarget.reset();
+      } else {
+        setContactStatus("error");
+      }
+    } catch {
+      setContactStatus("error");
+    }
+  };
 
   const curRef = useRef<HTMLDivElement>(null);
   const curRRef = useRef<HTMLDivElement>(null);
@@ -92,12 +142,12 @@ export default function LandingPageContent({ posts }: { posts: Post[] }) {
   }, []);
 
   const categories = [
-    { name: "Education", icon: <GraduationCap />, color: "#60a5fa", desc: "Examining how learning is evolving — from classrooms in Lagos to universities worldwide.", count: 12 },
-    { name: "Health", icon: <Heart />, color: "#34d399", desc: "Holistic views on physical and mental well-being, medicine, and the healthcare conversation.", count: 9 },
-    { name: "Tech", icon: <Laptop />, color: "#a78bfa", desc: "How technology is reshaping lives, businesses, and the future — seen through African eyes.", count: 18 },
-    { name: "Lifestyle", icon: <Sparkles />, color: "#f472b6", desc: "Culture, fashion, food, relationships — the art of living richly, intentionally, and beautifully.", count: 14 },
-    { name: "News", icon: <Newspaper />, color: "#e8c96a", desc: "Sharp, honest analysis of events and stories shaping our nation and world right now.", count: 22 },
-    { name: "Stories", icon: <Sparkles />, color: "#e8c96a", desc: "Immersive narratives and personal accounts that bring the human element to the forefront.", count: 8 },
+    { name: "Education", icon: <GraduationCap />, color: "#60a5fa", desc: "Examining how learning is evolving — from classrooms in Lagos to universities worldwide.", count: categoryCounts["education"] || 0 },
+    { name: "Health", icon: <Heart />, color: "#34d399", desc: "Holistic views on physical and mental well-being, medicine, and the healthcare conversation.", count: categoryCounts["health"] || 0 },
+    { name: "Tech", icon: <Laptop />, color: "#a78bfa", desc: "How technology is reshaping lives, businesses, and the future — seen through African eyes.", count: categoryCounts["tech"] || 0 },
+    { name: "Lifestyle", icon: <Sparkles />, color: "#f472b6", desc: "Culture, fashion, food, relationships — the art of living richly, intentionally, and beautifully.", count: categoryCounts["lifestyle"] || 0 },
+    { name: "News", icon: <Newspaper />, color: "#e8c96a", desc: "Sharp, honest analysis of events and stories shaping our nation and world right now.", count: categoryCounts["news"] || 0 },
+    { name: "Stories", icon: <Sparkles />, color: "#e8c96a", desc: "Immersive narratives and personal accounts that bring the human element to the forefront.", count: categoryCounts["stories"] || 0 },
   ];
 
   return (
@@ -184,36 +234,63 @@ export default function LandingPageContent({ posts }: { posts: Post[] }) {
 
           <div className="relative hidden lg:flex justify-center animate-fadeScale [animation-delay:0.2s]">
             <div className="relative w-full max-w-md h-[560px]">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-[380px] rounded-[20px] border border-periwinkle/20 bg-[#060d2a]/50 backdrop-blur-xl shadow-2xl overflow-hidden z-20">
+              {/* Main Card (Post 1) */}
+              <Link href={posts[0] ? `/blog/${posts[0].slug}` : "#blog"} className="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-[380px] rounded-[20px] border border-periwinkle/20 bg-[#060d2a]/50 backdrop-blur-xl shadow-2xl transition-all hover:scale-[1.02] hover:border-gold/40 hover:z-30 group/hero1 overflow-hidden z-20">
                 <div className="h-[250px] relative bg-gradient-to-br from-[#0b1e70] to-azure flex items-center justify-center">
+                  {posts[0]?.featuredImage ? (
+                    <Image src={posts[0].featuredImage} alt="" fill className="object-cover opacity-60 group-hover/hero1:scale-110 transition-transform duration-1000" />
+                  ) : (
+                    <span className="text-6xl z-10 transition-transform duration-500 group-hover/hero1:scale-110">🌍</span>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#060d2a]/90" />
-                  <span className="text-6xl z-10">🌍</span>
                 </div>
                 <div className="p-5">
-                  <span className="text-[0.62rem] tracking-widest uppercase text-gold block mb-2">✦ My View</span>
-                  <h3 className="font-serif text-lg font-semibold leading-tight">Making Sense of Africa's Place in the Digital Age</h3>
+                  <span className="text-[0.62rem] tracking-widest uppercase text-gold block mb-2">✦ Latest Insight</span>
+                  <h3 className="font-serif text-lg font-semibold leading-tight line-clamp-2">
+                    {posts[0]?.title || "Explore the World Through a New Lens"}
+                  </h3>
                 </div>
-              </div>
-              <div className="absolute bottom-10 left-0 w-48 h-64 rounded-[20px] border border-periwinkle/20 bg-[#060d2a]/50 backdrop-blur-xl shadow-2xl overflow-hidden -rotate-6 animate-sway1 z-10">
+              </Link>
+
+              {/* Left Card (Post 2) */}
+              <Link href={posts[1] ? `/blog/${posts[1].slug}` : "#blog"} className="absolute bottom-10 left-0 w-48 h-64 rounded-[20px] border border-periwinkle/20 bg-[#060d2a]/50 backdrop-blur-xl shadow-2xl transition-all hover:scale-[1.05] hover:border-azure/40 hover:z-30 group/hero2 overflow-hidden -rotate-6 animate-sway1 z-10">
                  <div className="h-32 relative bg-gradient-to-br from-[#071550] to-[#0b2980] flex items-center justify-center">
+                  {posts[1]?.featuredImage ? (
+                    <Image src={posts[1].featuredImage} alt="" fill className="object-cover opacity-60 group-hover/hero2:scale-110 transition-transform duration-1000" />
+                  ) : (
+                    <span className="text-5xl z-10 transition-transform duration-500 group-hover/hero2:scale-110">🎓</span>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#060d2a]/90" />
-                  <span className="text-5xl z-10">🎓</span>
                 </div>
                 <div className="p-4">
-                  <span className="text-[0.62rem] tracking-widest uppercase text-azure block mb-1">Education</span>
-                  <h3 className="font-serif text-sm font-semibold leading-tight">The Future of Learning in Nigeria</h3>
+                  <span className="text-[0.62rem] tracking-widest uppercase text-azure block mb-1">
+                    {posts[1]?.category || "Focus"}
+                  </span>
+                  <h3 className="font-serif text-sm font-semibold leading-tight line-clamp-2">
+                    {posts[1]?.title || "Fresh Thoughts"}
+                  </h3>
                 </div>
-              </div>
-              <div className="absolute bottom-2 right-0 w-44 h-56 rounded-[20px] border border-periwinkle/20 bg-[#060d2a]/50 backdrop-blur-xl shadow-2xl overflow-hidden rotate-[5deg] animate-sway2 z-10">
+              </Link>
+
+              {/* Right Card (Post 3) */}
+              <Link href={posts[2] ? `/blog/${posts[2].slug}` : "#blog"} className="absolute bottom-2 right-0 w-44 h-56 rounded-[20px] border border-periwinkle/20 bg-[#060d2a]/50 backdrop-blur-xl shadow-2xl transition-all hover:scale-[1.05] hover:border-[#34d399]/40 hover:z-30 group/hero3 overflow-hidden rotate-[5deg] animate-sway2 z-10">
                 <div className="h-28 relative bg-gradient-to-br from-[#042d1a] to-[#065c34] flex items-center justify-center">
+                  {posts[2]?.featuredImage ? (
+                    <Image src={posts[2].featuredImage} alt="" fill className="object-cover opacity-60 group-hover/hero3:scale-110 transition-transform duration-1000" />
+                  ) : (
+                    <span className="text-4xl z-10 transition-transform duration-500 group-hover/hero3:scale-110">💊</span>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#060d2a]/90" />
-                  <span className="text-4xl z-10">💊</span>
                 </div>
                 <div className="p-4">
-                  <span className="text-[0.62rem] tracking-widest uppercase text-[#34d399] block mb-1">Health</span>
-                  <h3 className="font-serif text-sm font-semibold leading-tight">Wellness Secrets</h3>
+                  <span className="text-[0.62rem] tracking-widest uppercase text-[#34d399] block mb-1">
+                    {posts[2]?.category || "Lens"}
+                  </span>
+                  <h3 className="font-serif text-sm font-semibold leading-tight line-clamp-2">
+                    {posts[2]?.title || "Refined View"}
+                  </h3>
                 </div>
-              </div>
+              </Link>
             </div>
             
             <div className="absolute bottom-16 -right-8 max-w-[210px] bg-white/5 border-l-2 border-gold p-4 rounded-r-xl backdrop-blur-md animate-floatQ z-30">
@@ -282,7 +359,19 @@ export default function LandingPageContent({ posts }: { posts: Post[] }) {
                   style={{ '--accent': cat.color } as any}
                 >
                   <div className="absolute top-0 left-0 w-full h-[3px] bg-[var(--accent)] scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-400" />
-                  <div className="text-4xl opacity-80 group-hover:scale-110 transition-transform duration-500 mb-2 block">{["🎓", "💊", "💻", "🌸", "📰"][categories.indexOf(cat)]}</div>
+                  <div className="relative w-12 h-12 mb-4 group-hover:scale-110 transition-transform duration-500 overflow-hidden rounded-lg bg-royal/20 flex items-center justify-center">
+                    {latestForCat?.featuredImage ? (
+                      <Image 
+                        src={latestForCat.featuredImage} 
+                        alt={cat.name} 
+                        fill 
+                        sizes="48px"
+                        className="object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                      />
+                    ) : (
+                      <span className="text-3xl">{["🎓", "💊", "💻", "🌸", "📰", "📖"][categories.indexOf(cat)]}</span>
+                    )}
+                  </div>
                   <h3 className="font-serif text-xl font-semibold leading-none">{cat.name}</h3>
                   <span className="text-[0.7rem] tracking-widest text-periwinkle uppercase block">{cat.count} articles</span>
                   <p className="text-sm text-veil leading-relaxed font-light line-clamp-2">{cat.desc}</p>
@@ -419,11 +508,23 @@ export default function LandingPageContent({ posts }: { posts: Post[] }) {
                 href={`/blog/${post.slug}`}
                 className={`group bg-white/5 border border-periwinkle/12 rounded-2xl overflow-hidden flex flex-col hover:-translate-y-1.5 hover:border-periwinkle/30 hover:shadow-[0_28px_70px_rgba(0,0,0,0.45)] transition-all duration-400 rv ${i === 0 ? 'lg:col-span-2 lg:flex-row' : ''}`}
               >
-                <div className={`relative overflow-hidden bg-gradient-to-br from-indigo-900 to-royal flex items-center justify-center min-h-[170px] ${i === 0 ? 'lg:w-[45%] lg:min-h-full' : 'h-[170px]'}`}>
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#060d2a]/90 transition-transform duration-700 group-hover:scale-105" />
-                  <span className={`z-10 transition-transform duration-500 group-hover:scale-110 ${i === 0 ? 'text-7xl' : 'text-5xl'}`}>
-                    {["🎓", "💊", "🤖", "🌺", "📰"][i % 5]}
-                  </span>
+                <div className={`relative overflow-hidden bg-gradient-to-br from-[#060d2a] to-[#0b1e70] flex items-center justify-center min-h-[170px] ${i === 0 ? 'lg:w-[45%] lg:min-h-full' : 'h-[170px]'}`}>
+                  {post.featuredImage ? (
+                    <Image 
+                      src={post.featuredImage} 
+                      alt={post.title} 
+                      fill 
+                      sizes={i === 0 ? "(max-width: 1024px) 100vw, 45vw" : "(max-width: 1024px) 100vw, 33vw"}
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#060d2a] to-[#0b1e70] flex items-center justify-center">
+                      <span className={`z-10 transition-transform duration-500 group-hover:scale-110 ${i === 0 ? 'text-7xl' : 'text-5xl'}`}>
+                        {["🎓", "💊", "💻", "🌸", "📰"][i % 5]}
+                      </span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#060d2a]/60 group-hover:to-[#060d2a]/80 transition-all duration-300" />
                 </div>
                 <div className="p-8 flex flex-col flex-1">
                   <div className="flex items-center gap-2 text-[0.7rem] tracking-widest uppercase text-azure mb-4 font-semibold">
@@ -461,19 +562,25 @@ export default function LandingPageContent({ posts }: { posts: Post[] }) {
           <p className="text-veil font-light leading-relaxed">
             One thoughtfully curated email, whenever a new piece drops. No spam. No noise. Just honest, considered writing straight to you.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+          <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
             <input 
-              className="flex-1 bg-white/5 border border-periwinkle/25 rounded-full px-6 py-3.5 text-white font-light placeholder:text-periwinkle focus:outline-none focus:border-azure transition-colors" 
+              name="email"
+              className="flex-1 bg-white/5 border border-periwinkle/25 rounded-full px-6 py-3.5 text-white font-light placeholder:text-periwinkle focus:outline-none focus:border-azure transition-colors disabled:opacity-50" 
               type="email" 
+              required
               placeholder="your@email.com" 
+              id="newsletter-email"
+              disabled={newsletterStatus === "submitting" || newsletterStatus === "success"}
             />
             <button 
-              onClick={() => setIsSubscribed(true)}
-              className="px-8 py-3.5 rounded-full bg-gold text-[#03081e] font-semibold hover:bg-gold2 hover:translate-y-[-2px] hover:shadow-[0_8px_24px_rgba(232,201,106,0.35)] transition-all whitespace-nowrap"
+              type="submit"
+              disabled={newsletterStatus === "submitting" || newsletterStatus === "success"}
+              className="px-8 py-3.5 rounded-full bg-gold text-[#03081e] font-semibold hover:bg-gold2 hover:translate-y-[-2px] hover:shadow-[0_8px_24px_rgba(232,201,106,0.35)] transition-all whitespace-nowrap text-center disabled:opacity-70 disabled:hover:translate-y-0"
             >
-              {isSubscribed ? "✓ Subscribed!" : "Subscribe ✦"}
+              {newsletterStatus === "submitting" ? "Sending..." : newsletterStatus === "success" ? "✓ Subscribed!" : "Subscribe ✦"}
             </button>
-          </div>
+          </form>
+          {newsletterStatus === "error" && <p className="text-red-400 text-sm">Something went wrong. Please try again.</p>}
           <p className="text-[0.72rem] text-periwinkle">Join 5,000+ readers · Unsubscribe anytime</p>
         </div>
       </section>
@@ -495,34 +602,41 @@ export default function LandingPageContent({ posts }: { posts: Post[] }) {
             <div className="space-y-4 pt-4">
               <span className="text-[0.72rem] tracking-widest text-veil uppercase block">Find me here</span>
               <div className="flex flex-wrap gap-3">
-                {["𝕏 Twitter", "in LinkedIn", "📸 Instagram", "🎙️ Podcast"].map(social => (
-                  <Link key={social} href="#" className="px-5 py-2 rounded-full border border-periwinkle/20 text-[0.8rem] text-veil hover:border-azure hover:text-white hover:bg-azure/10 transition-all">
-                    {social}
+                {[
+                  { name: "Facebook", icon: "📘", url: "https://www.facebook.com/share/1EcgJEQmba/" },
+                  { name: "Instagram", icon: "📸", url: "https://www.instagram.com/olanrewajuriches?igsh=MXN1eHprc2l3Nzhibg==" },
+                  { name: "X (Twitter)", icon: "𝕏", url: "https://x.com/seunbayonle" },
+                  { name: "Email", icon: "✉️", url: "mailto:seunbayonle@gmail.com" }
+                ].map(social => (
+                  <Link key={social.name} href={social.url} target="_blank" rel="noopener noreferrer" className="px-5 py-2 rounded-full border border-periwinkle/20 text-[0.8rem] text-veil hover:border-azure hover:text-white hover:bg-azure/10 transition-all flex items-center gap-2">
+                    <span>{social.icon}</span> {social.name}
                   </Link>
                 ))}
               </div>
             </div>
           </div>
           
-          <div className="bg-white/5 p-8 md:p-12 rounded-3xl border border-periwinkle/12 space-y-6 rv [transition-delay:0.2s]">
+          <form onSubmit={handleContactSubmit} className="bg-white/5 p-8 md:p-12 rounded-3xl border border-periwinkle/12 space-y-6 rv [transition-delay:0.2s]">
             <div className="space-y-4">
               <div>
                 <label className="text-[0.75rem] tracking-widest uppercase text-gold block mb-2 font-medium">Your Name</label>
-                <input className="w-full bg-white/5 border border-periwinkle/18 rounded-xl px-5 py-3.5 text-white placeholder:text-periwinkle/40 focus:outline-none focus:border-azure transition-all" type="text" placeholder="How shall I address you?" />
+                <input name="name" required disabled={contactStatus === "submitting"} className="w-full bg-white/5 border border-periwinkle/18 rounded-xl px-5 py-3.5 text-white placeholder:text-periwinkle/40 focus:outline-none focus:border-azure transition-all disabled:opacity-50" type="text" placeholder="How shall I address you?" />
               </div>
               <div>
                 <label className="text-[0.75rem] tracking-widest uppercase text-gold block mb-2 font-medium">Email Address</label>
-                <input className="w-full bg-white/5 border border-periwinkle/18 rounded-xl px-5 py-3.5 text-white placeholder:text-periwinkle/40 focus:outline-none focus:border-azure transition-all" type="email" placeholder="your@email.com" />
+                <input name="email" required disabled={contactStatus === "submitting"} className="w-full bg-white/5 border border-periwinkle/18 rounded-xl px-5 py-3.5 text-white placeholder:text-periwinkle/40 focus:outline-none focus:border-azure transition-all disabled:opacity-50" type="email" placeholder="your@email.com" />
               </div>
               <div>
                 <label className="text-[0.75rem] tracking-widest uppercase text-gold block mb-2 font-medium">Your Message</label>
-                <textarea className="w-full bg-white/5 border border-periwinkle/18 rounded-xl px-5 py-3.5 text-white placeholder:text-periwinkle/40 focus:outline-none focus:border-azure transition-all h-32 resize-none" placeholder="Tell me what's on your mind…" />
+                <textarea name="message" required disabled={contactStatus === "submitting"} className="w-full bg-white/5 border border-periwinkle/18 rounded-xl px-5 py-3.5 text-white placeholder:text-periwinkle/40 focus:outline-none focus:border-azure transition-all h-32 resize-none disabled:opacity-50" placeholder="Tell me what's on your mind…" />
               </div>
             </div>
-            <button className="w-full px-8 py-4 rounded-full bg-gold text-[#03081e] font-semibold text-[0.88rem] hover:bg-gold2 transition-all flex items-center justify-center gap-2">
-              Send Message ✦
+            {contactStatus === "error" && <p className="text-red-400 text-sm px-2">An error occurred. Please try again.</p>}
+            {contactStatus === "success" && <p className="text-[#34d399] text-sm px-2">Message sent successfully! I'll be in touch soon.</p>}
+            <button type="submit" disabled={contactStatus === "submitting"} className="w-full px-8 py-4 rounded-full bg-gold text-[#03081e] font-semibold text-[0.88rem] hover:bg-gold2 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0 disabled:cursor-wait">
+              {contactStatus === "submitting" ? "Sending..." : "Send Message ✦"}
             </button>
-          </div>
+          </form>
         </div>
       </section>
 
