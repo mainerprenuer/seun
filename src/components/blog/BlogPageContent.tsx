@@ -326,7 +326,7 @@ export default function BlogArchivePremium({ initialPosts, categoryCounts }: Blo
                       <div className="flex items-center justify-between pt-2">
                         <div className="flex items-center gap-4 text-[0.7rem] text-periwinkle opacity-70">
                           <span className="flex items-center gap-1.5"><Calendar size={12} /> {new Date(post.createdAt).toLocaleDateString()}</span>
-                          <span className="flex items-center gap-1.5"><Clock size={12} /> {Math.ceil(post.content.length / 500)} min read</span>
+                        <span className="flex items-center gap-1.5"><Clock size={12} /> {Math.ceil((post.content?.length || 0) / 500)} min read</span>
                         </div>
                         <span className="text-azure flex items-center gap-1 text-sm font-semibold opacity-0 group-hover:opacity-100 group-hover:gap-2 transition-all">
                           Read <ChevronRight size={16} />
