@@ -8,22 +8,22 @@
 SeunInsight is wrapped in the custom **"Abyss"** theme—a deep, immersive aesthetic designed for focused reading:
 - **Palette**: Royal Blue, Gold, and Frost White.
 - **Typography**: A curated blend of elegant Serifs for storytelling and modern Sans-serifs for clarity.
-- **Glassmorphism**: Subtle noise overlays and glassmorphic UI elements for a premium, tactile feel.
-- **Micro-animations**: Smooth transitions and reveal-on-scroll elements that bring articles to life.
+- **Micro-animations**: Smooth transitions, reveal-on-scroll elements, and glassmorphic UI components that bring articles to life.
 
-## 🖋️ The Editorial Suite
+## 🖋️ The Editorial Suite (Mobile-First)
 A bespoke administrative desk designed for modern creators:
 - **Premium Editor**: A clean, distraction-free writing environment with real-time preview and autosave.
-- **Visual-First Workflow**: Integrated "Featured Image" engine with local storage and responsive hero rendering.
+- **Cloud-Native Media**: Integrated **Cloudinary** engine for high-performance, optimized image storage and delivery.
 - **Dynamic Lenses**: Full control over content categorization across six windows: *Education, Health, Tech, Lifestyle, News, and Stories*.
-- **Mobile Power**: A fully responsive admin interface with a bottom-navigation bridge for editing on the go.
+- **Mobile Power**: A fully responsive admin interface with a glassmorphic **Bottom Navigation Bar** for editing on the go.
 
 ## 🛠️ Technical Architecture
-- **Framework**: [Next.js](https://nextjs.org/) (App Router)
-- **Database**: [Prisma](https://www.prisma.io/) with SQLite
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) with Custom Design Tokens
+- **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
+- **Database**: [Prisma](https://www.prisma.io/) with **MongoDB Atlas**
+- **Media Storage**: [Cloudinary](https://cloudinary.com/) (CDN-optimized)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) with Custom Design Tokens
 - **Icons**: [Lucide React](https://lucide.dev/)
-- **Editor**: [React Quill](https://github.com/zenoamaro/react-quill) (Refined for Abyss)
+- **Editor**: [React Quill New](https://github.com/zenoamaro/react-quill) (Refined for Abyss)
 
 ---
 
@@ -34,27 +34,36 @@ A bespoke administrative desk designed for modern creators:
 npm install
 ```
 
-### 2. Database Setup
-Initialize the SQLite database and seed initial sample content:
+### 2. Environment Configuration
+Create a `.env` file with your production credentials:
 ```bash
+# Database (MongoDB Atlas)
+DATABASE_URL="mongodb+srv://user:password@cluster.mongodb.net/dbname"
+
+# Media Storage (Cloudinary)
+CLOUDINARY_CLOUD_NAME="your_cloud_name"
+CLOUDINARY_API_KEY="your_api_key"
+CLOUDINARY_API_SECRET="your_api_secret"
+
+# Authentication
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+### 3. Database Initialization
+Generate the Prisma client and synchronize the schema:
+```bash
+npx prisma generate
 npx prisma db push
 npx tsx scripts/seed.ts
 ```
 
-### 3. Development Server
+### 4. Launch Development Server
 ```bash
 npm run dev
 ```
-Visit [http://localhost:3000](http://localhost:3000) to see the platform.
-Visit [http://localhost:3000/admin](http://localhost:3000/admin) for the Editorial Desk.
-
----
-
-## 📖 Key Directories
-- `/src/app/(website)`: Public-facing editorial site.
-- `/src/app/admin`: The Editorial Desk suite.
-- `/src/components`: Premium UI atomic components.
-- `/public/uploads`: Local storage for featured article imagery.
+- Public Site: [http://localhost:3000](http://localhost:3000)
+- Editorial Desk: [http://localhost:3000/admin](http://localhost:3000/admin)
 
 ---
 
