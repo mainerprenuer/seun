@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { 
   LayoutDashboard, 
   PlusCircle, 
@@ -18,9 +19,22 @@ export default function AdminLayout({
     <div className="min-h-screen bg-[#03081e] text-white flex flex-col md:flex-row font-sans">
       {/* Mobile Header */}
       <header className="md:hidden flex items-center justify-between p-4 border-b border-periwinkle/10 bg-[#060d2a] sticky top-0 z-[50]">
-        <Link href="/admin" className="flex items-baseline gap-0.5">
-          <span className="font-serif text-xl font-bold text-white tracking-tight">Seun</span>
-          <span className="font-serif text-xl font-light italic text-gold tracking-tight">Admin</span>
+        <Link href="/admin" className="flex items-center gap-2 group">
+          <div className="relative w-8 h-8 overflow-hidden rounded-full border border-gold/20 flex-shrink-0">
+            <Image 
+              src="/logo.jpg" 
+              alt="SeunAdmin Logo" 
+              fill 
+              className="object-cover scale-[1.35]"
+              priority
+              loading="eager"
+              sizes="32px"
+            />
+          </div>
+          <div className="flex items-baseline gap-0.5">
+            <span className="font-serif text-xl font-bold text-white tracking-tight">Seun</span>
+            <span className="font-serif text-xl font-light italic text-gold tracking-tight">Admin</span>
+          </div>
         </Link>
         <Link href="/" className="p-2 rounded-lg bg-white/5 text-veil" title="View Site">
           <Globe size={18} />
@@ -29,9 +43,22 @@ export default function AdminLayout({
       {/* Sidebar (Desktop) */}
       <aside className="hidden md:flex w-64 border-r border-periwinkle/10 flex-col sticky top-0 h-screen bg-[#060d2a]">
         <div className="p-8 border-b border-periwinkle/10">
-          <Link href="/admin" className="flex items-baseline gap-0.5">
-            <span className="font-serif text-2xl font-bold text-white tracking-tight">Seun</span>
-            <span className="font-serif text-2xl font-light italic text-gold tracking-tight">Admin</span>
+          <Link href="/admin" className="flex items-center gap-3 group">
+            <div className="relative w-10 h-10 overflow-hidden rounded-full border border-gold/20 flex-shrink-0 group-hover:border-gold/50 transition-colors shadow-lg">
+              <Image 
+                src="/logo.jpg" 
+                alt="SeunAdmin Logo" 
+                fill 
+                className="object-cover scale-[1.35]"
+                priority
+                loading="eager"
+                sizes="40px"
+              />
+            </div>
+            <div className="flex items-baseline gap-0.5">
+              <span className="font-serif text-2xl font-bold text-white tracking-tight">Seun</span>
+              <span className="font-serif text-2xl font-light italic text-gold tracking-tight">Admin</span>
+            </div>
           </Link>
         </div>
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
 
 export default function Navbar() {
@@ -23,9 +24,22 @@ export default function Navbar() {
         : "bg-transparent border-periwinkle/5"
     }`}>
       <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
-        <Link href="/" className="flex items-baseline gap-0.5 group">
-          <span className="font-serif text-2xl font-bold text-white tracking-tight">Seun</span>
-          <span className="font-serif text-2xl font-light italic text-gold tracking-tight">Insight</span>
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="relative w-10 h-10 overflow-hidden rounded-full border border-gold/30 group-hover:border-gold transition-all bg-[#03081e]">
+            <Image 
+              src="/logo.jpg" 
+              alt="SeunInsight Logo" 
+              fill 
+              className="object-cover scale-[1.35]"
+              priority
+              loading="eager"
+              sizes="40px"
+            />
+          </div>
+          <div className="flex items-baseline gap-0.5">
+            <span className="font-serif text-xl font-bold text-white tracking-tight">Seun</span>
+            <span className="font-serif text-xl font-light italic text-gold tracking-tight">Insight</span>
+          </div>
         </Link>
         
         {/* Desktop Menu */}

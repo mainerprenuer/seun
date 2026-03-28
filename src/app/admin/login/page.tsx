@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Sparkles, ArrowRight, Lock, Mail } from "lucide-react";
 
 export default function AdminLogin() {
@@ -80,9 +81,22 @@ export default function AdminLogin() {
 
       <div className="w-full max-w-md relative z-10 animate-riseIn">
         <div className="text-center mb-10">
-          <Link href="/" className="inline-flex items-baseline gap-0.5 group mb-6">
-            <span className="font-serif text-4xl font-bold text-white tracking-tight">Seun</span>
-            <span className="font-serif text-4xl font-light italic text-gold tracking-tight">Insight</span>
+          <Link href="/" className="inline-flex flex-col items-center gap-4 group mb-6">
+            <div className="relative w-20 h-20 overflow-hidden rounded-full border-2 border-gold/20 group-hover:border-gold/50 transition-all shadow-[0_0_40px_rgba(232,201,106,0.15)] bg-[#03081e]">
+              <Image 
+                src="/logo.jpg" 
+                alt="SeunInsight Logo" 
+                fill 
+                className="object-cover scale-[1.35]"
+                priority
+                loading="eager"
+                sizes="80px"
+              />
+            </div>
+            <div className="flex items-baseline gap-0.5">
+              <span className="font-serif text-4xl font-bold text-white tracking-tight">Seun</span>
+              <span className="font-serif text-4xl font-light italic text-gold tracking-tight">Insight</span>
+            </div>
           </Link>
           <div className="flex items-center justify-center gap-2 mb-2">
             <div className="h-px w-8 bg-gold/30" />

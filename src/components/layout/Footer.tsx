@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Globe, Link as LinkIcon, Camera, Mail, ArrowUpRight } from 'lucide-react';
 
 export default function Footer() {
@@ -9,9 +10,20 @@ export default function Footer() {
       
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 relative z-10">
         <div className="space-y-6">
-          <Link href="/" className="flex items-baseline gap-0.5 group">
-            <span className="font-serif text-3xl font-bold text-white tracking-tight">Seun</span>
-            <span className="font-serif text-3xl font-light italic text-gold tracking-tight">Insight</span>
+          <Link href="/" className="flex items-center gap-4 group">
+            <div className="relative w-12 h-12 overflow-hidden rounded-full border border-gold/20 group-hover:border-gold/50 transition-all shadow-2xl bg-[#03081e]">
+              <Image 
+                src="/logo.jpg" 
+                alt="SeunInsight Logo" 
+                fill 
+                className="object-cover scale-[1.35]"
+                sizes="48px"
+              />
+            </div>
+            <div className="flex items-baseline gap-0.5">
+              <span className="font-serif text-3xl font-bold text-white tracking-tight">Seun</span>
+              <span className="font-serif text-3xl font-light italic text-gold tracking-tight">Insight</span>
+            </div>
           </Link>
           <p className="text-[0.9rem] text-veil leading-relaxed font-light max-w-[280px]">
             Curated narratives on the intersection of culture, technology, and wellness. A lens into the heart of Nigeria.
