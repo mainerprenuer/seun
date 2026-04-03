@@ -207,20 +207,21 @@ export default function BlogPostContent({ post }: { post: Post }) {
       )}
 
       {/* MAIN ARTICLE BODY */}
-      <main className="max-w-4xl mx-auto px-6 py-24">
+      <main className="max-w-3xl mx-auto px-6 py-24 md:py-32">
         <div className="rv relative">
           {/* Article Decoration */}
-          <div className="absolute -left-12 top-0 text-7xl font-serif text-gold/10 pointer-events-none select-none italic">"</div>
+          <div className="absolute -left-16 top-0 text-8xl font-serif text-gold/10 pointer-events-none select-none italic hidden md:block">"</div>
           
           {/* Post Content */}
           <div 
-            className="prose prose-invert prose-lg max-w-none 
+            className="prose prose-invert prose-xl max-w-none font-serif
               prose-headings:font-serif prose-headings:font-light prose-headings:italic prose-headings:text-gold
-              prose-p:text-veil prose-p:leading-[1.8] prose-p:font-light
-              prose-strong:text-white prose-strong:font-medium
-              prose-a:text-azure prose-a:no-underline hover:prose-a:underline
-              prose-blockquote:border-l-gold prose-blockquote:bg-gold/5 prose-blockquote:py-2 prose-blockquote:rounded-r-xl
-              prose-img:rounded-3xl prose-img:border prose-img:border-periwinkle/10
+              prose-headings:mt-24 prose-headings:mb-10
+              prose-p:text-veil/90 prose-p:leading-[1.95] prose-p:font-light prose-p:tracking-wide prose-p:mb-12
+              prose-strong:text-white prose-strong:font-semibold
+              prose-a:text-azure prose-a:no-underline hover:prose-a:underline prose-a:decoration-azure/30
+              prose-blockquote:border-l-gold prose-blockquote:bg-gold/5 prose-blockquote:py-8 prose-blockquote:px-12 prose-blockquote:rounded-r-3xl prose-blockquote:italic prose-blockquote:text-2xl prose-blockquote:font-light prose-blockquote:text-gold/80 prose-blockquote:my-16
+              prose-img:rounded-3xl prose-img:border prose-img:border-periwinkle/10 prose-img:shadow-[0_40px_100px_rgba(0,0,0,0.4)] prose-img:my-20
               animate-riseIn [animation-delay:0.3s]"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />

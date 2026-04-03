@@ -7,15 +7,15 @@ export default function Footer() {
     <footer className="border-t border-periwinkle/12 bg-[#03081e] py-24 px-8 mt-auto relative overflow-hidden text-token">
       {/* Decorative Gradient Flare */}
       <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-royal/10 blur-[120px] rounded-full pointer-events-none" />
-      
+
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 relative z-10">
         <div className="space-y-6">
           <Link href="/" className="flex items-center gap-4 group">
             <div className="relative w-12 h-12 overflow-hidden rounded-full border border-gold/20 group-hover:border-gold/50 transition-all shadow-2xl bg-[#03081e]">
-              <Image 
-                src="/logo.jpg" 
-                alt="SeunInsight Logo" 
-                fill 
+              <Image
+                src="/logo.jpg"
+                alt="SeunInsight Logo"
+                fill
                 className="object-cover scale-[1.35]"
                 sizes="48px"
               />
@@ -65,21 +65,16 @@ export default function Footer() {
             <li><Link href="/blog" className="text-[0.88rem] text-veil hover:text-white transition-colors">The Archive</Link></li>
             <li><Link href="/#newsletter" className="text-[0.88rem] text-veil hover:text-white transition-colors">Subscribe</Link></li>
             <li><Link href="/#contact" className="text-[0.88rem] text-veil hover:text-white transition-colors">Work with Me</Link></li>
-            <li className="pt-2">
-              <Link href="/admin" className="text-gold font-bold text-[0.65rem] uppercase tracking-widest bg-gold/10 px-3 py-1.5 rounded border border-gold/30 hover:bg-gold hover:text-[#03081e] transition-colors inline-block text-center shadow-lg" title="Login to Admin Portal">
-                Admin Access
-              </Link>
-            </li>
           </ul>
         </div>
 
         <div>
-           <h4 className="text-[0.7rem] uppercase tracking-[0.2em] text-gold font-bold mb-8 opacity-60">Legal</h4>
-           <ul className="space-y-4">
-             <li><Link href="/privacy" className="text-[0.88rem] text-veil hover:text-white transition-colors">Privacy Charter</Link></li>
-             <li><Link href="/terms" className="text-[0.88rem] text-veil hover:text-white transition-colors">Terms of Service</Link></li>
-             <li><Link href="/cookies" className="text-[0.88rem] text-veil hover:text-white transition-colors">Cookie Policy</Link></li>
-           </ul>
+          <h4 className="text-[0.7rem] uppercase tracking-[0.2em] text-gold font-bold mb-8 opacity-60">Legal</h4>
+          <ul className="space-y-4">
+            <li><Link href="/privacy" className="text-[0.88rem] text-veil hover:text-white transition-colors">Privacy Charter</Link></li>
+            <li><Link href="/terms" className="text-[0.88rem] text-veil hover:text-white transition-colors">Terms of Service</Link></li>
+            <li><Link href="/cookies" className="text-[0.88rem] text-veil hover:text-white transition-colors">Cookie Policy</Link></li>
+          </ul>
         </div>
       </div>
 
