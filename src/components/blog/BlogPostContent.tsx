@@ -32,7 +32,6 @@ export default function BlogPostContent({ post }: { post: Post }) {
   const [my, setMy] = useState(0);
   const [stars, setStars] = useState<{w:number,h:number,t:number,l:number,dur:string,del:string,lo:number,hi:number}[]>([]);
   const [copied, setCopied] = useState(false);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Generate stars only on client
@@ -49,10 +48,8 @@ export default function BlogPostContent({ post }: { post: Post }) {
     setStars(starArr);
 
     const handleScroll = () => {
-      const container = scrollContainerRef.current;
-      if (!container) return;
-      const s = container.scrollTop;
-      const h = container.scrollHeight - container.clientHeight;
+      const s = window.scrollY;
+      const h = document.body.scrollHeight - window.innerHeight;
       if (h > 0) setScrolled((s / h) * 100);
     };
 
@@ -61,8 +58,7 @@ export default function BlogPostContent({ post }: { post: Post }) {
       setMy(e.clientY);
     };
 
-    const container = scrollContainerRef.current;
-    if (container) container.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
     window.addEventListener("mousemove", handleMouseMove);
 
     // Reveal animations
@@ -80,7 +76,7 @@ export default function BlogPostContent({ post }: { post: Post }) {
     document.querySelectorAll(".rv").forEach((el) => observer.observe(el));
 
     return () => {
-      if (container) container.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
       observer.disconnect();
     };
@@ -112,7 +108,7 @@ export default function BlogPostContent({ post }: { post: Post }) {
   };
 
   return (
-    <div className="bg-[#060d2a] text-white selection:bg-gold/30 min-h-screen cursor-none flex flex-col relative overflow-x-hidden">
+    <div className="bg-[#060d2a] text-white selection:bg-gold/30 min-h-screen cursor-none overflow-x-hidden">
       {/* Background Stars (Fixed) */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-30">
         {stars.map((s, i) => (
@@ -132,24 +128,19 @@ export default function BlogPostContent({ post }: { post: Post }) {
         style={{ left: mx, top: my }} 
       />
 
-      {/* SCROLLABLE BODY ("SLIDER") */}
-      <div 
-        ref={scrollContainerRef}
-        className="relative z-10 flex-1 overflow-y-auto custom-scrollbar scroll-smooth"
-      >
-        {/* HERO SECTION */}
-        <header className="relative pt-40 pb-24 px-6 overflow-hidden border-b border-periwinkle/10">
-          <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_80%_at_50%_-20%,rgba(21,64,184,0.2)_0%,transparent_60%)]" />
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(var(--periwinkle) 1px, transparent 1px), linear-gradient(90deg, var(--periwinkle) 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
-          </div>
+      {/* HERO SECTION */}
+      <header className="relative pt-40 pb-24 px-6 overflow-hidden border-b border-periwinkle/10">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_80%_at_50%_-20%,rgba(21,64,184,0.2)_0%,transparent_60%)]" />
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(var(--periwinkle) 1px, transparent 1px), linear-gradient(90deg, var(--periwinkle) 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
+        </div>
 
-          <div className="relative z-10 max-w-4xl mx-auto space-y-10 text-center md:text-left">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6 animate-riseIn">
-              <Link href="/blog" className="group inline-flex items-center gap-2 text-veil hover:text-white transition-colors text-sm">
-                <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
-                Back to Archive
-              </Link>
+        <div className="relative z-10 max-w-4xl mx-auto space-y-10 text-center md:text-left">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 animate-riseIn">
+            <Link href="/blog" className="group inline-flex items-center gap-2 text-veil hover:text-white transition-colors text-sm">
+              <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
+              Back to Archive
+            </Link>
               <div className="flex items-center gap-3">
                 <span className="px-4 py-1.5 rounded-full bg-azure/10 border border-azure/20 text-[0.65rem] tracking-[0.2em] uppercase text-azure font-bold">
                   {post.category}
@@ -220,17 +211,17 @@ export default function BlogPostContent({ post }: { post: Post }) {
           
           {/* Post Content */}
           <div 
-            className="prose prose-invert max-w-none font-serif
-              text-[2.5rem] md:text-[3.5rem] leading-[1.6] tracking-tight
-              [&_p]:text-[2.5rem] md:[&_p]:text-[3.5rem] [&_p]:text-white/95 [&_p]:leading-[1.6] [&_p]:font-normal [&_p]:my-0 [&_p]:min-h-[1.6em]
-              [&_div]:text-[2.5rem] md:[&_div]:text-[3.5rem] [&_div]:text-white/95 [&_div]:leading-[1.6] [&_div]:font-normal [&_div]:my-0 [&_div]:min-h-[1.6em]
-              [&_span]:!text-[2.5rem] md:[&_span]:!text-[3.5rem] [&_span]:!leading-[1.6]
+            className="prose prose-invert max-w-none font-serif whitespace-pre-wrap break-words
+              text-[1.375rem] md:text-[1.75rem] leading-[1.8] tracking-tight
+              [&_p]:text-[1.375rem] md:[&_p]:text-[1.75rem] [&_p]:text-white/95 [&_p]:leading-[1.8] [&_p]:font-normal [&_p]:my-0 [&_p]:min-h-[1.8em]
+              [&_div]:text-[1.375rem] md:[&_div]:text-[1.75rem] [&_div]:text-white/95 [&_div]:leading-[1.8] [&_div]:font-normal [&_div]:my-0 [&_div]:min-h-[1.8em]
+              [&_span]:!text-[1.375rem] md:[&_span]:!text-[1.75rem] [&_span]:!leading-[1.8]
               prose-headings:font-serif prose-headings:font-light prose-headings:italic prose-headings:text-gold
-              prose-h2:!text-[3.5rem] md:prose-h2:!text-[6rem] prose-h2:mt-24 prose-h2:mb-10
-              prose-h3:!text-[3rem] md:prose-h3:!text-[4rem]
+              prose-h2:!text-[2.5rem] md:prose-h2:!text-[4rem] prose-h2:mt-20 prose-h2:mb-8
+              prose-h3:!text-[2rem] md:prose-h3:!text-[2.75rem]
               prose-strong:text-white prose-strong:font-semibold
               prose-a:text-azure prose-a:no-underline hover:prose-a:underline prose-a:decoration-azure/30
-              prose-blockquote:border-l-gold prose-blockquote:bg-gold/5 prose-blockquote:py-10 prose-blockquote:px-12 prose-blockquote:rounded-r-3xl prose-blockquote:italic prose-blockquote:!text-[3rem] md:prose-blockquote:!text-[4rem] prose-blockquote:font-light prose-blockquote:text-gold/80 prose-blockquote:my-24 prose-blockquote:leading-[1.6]
+              prose-blockquote:border-l-gold prose-blockquote:bg-gold/5 prose-blockquote:py-8 prose-blockquote:px-10 prose-blockquote:rounded-r-3xl prose-blockquote:italic prose-blockquote:!text-[1.875rem] md:prose-blockquote:!text-[2.5rem] prose-blockquote:font-light prose-blockquote:text-gold/80 prose-blockquote:my-16 prose-blockquote:leading-[1.7]
               prose-img:rounded-3xl prose-img:border prose-img:border-periwinkle/10 prose-img:shadow-[0_40px_100px_rgba(0,0,0,0.4)] prose-img:mt-20 prose-img:mb-16
               animate-riseIn [animation-delay:0.3s]"
             dangerouslySetInnerHTML={{ __html: post.content }}
@@ -284,6 +275,5 @@ export default function BlogPostContent({ post }: { post: Post }) {
         </div>
       </main>
     </div>
-  </div>
-);
+  );
 }
