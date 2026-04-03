@@ -106,3 +106,35 @@ body {
 .font-outfit {
   font-family: var(--font-outfit);
 }
+
+/* CUSTOM GOLD SCROLLBAR (SLIDER) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(6, 13, 42, 0.5);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--gold), var(--azure));
+  border-radius: 99px;
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) rgba(6, 13, 42, 0.5);
+}
+
+/* CUSTOM GOLD SCROLLBAR (SLIDER) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(6, 13, 42, 0.5);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--gold), var(--azure));
+  border-radius: 99px;
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) rgba(6, 13, 42, 0.5);
+}
