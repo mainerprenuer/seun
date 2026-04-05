@@ -36,7 +36,13 @@ export default async function BlogPost({
 
   const post = await prisma.post.findUnique({
     where: { slug },
-    include: { author: { select: { name: true } } },
+    include: { 
+      author: { select: { name: true } },
+      comments: {
+        where: { isApproved: true },
+        orderBy: { createdAt: 'desc' }
+      }
+    },
   });
 
   if (!post || (!post.published && !isPreview)) {
@@ -47,6 +53,10 @@ export default async function BlogPost({
   const serializedPost = {
     ...post,
     createdAt: post.createdAt.toISOString(),
+    comments: post.comments.map(c => ({
+      ...c,
+      createdAt: c.createdAt.toISOString()
+    }))
   };
 
   return <BlogPostContent post={serializedPost} />;

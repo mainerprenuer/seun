@@ -18,15 +18,27 @@ model User {
 }
 
 model Post {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   title         String
-  slug          String   @unique
+  slug          String    @unique
   content       String
-  category      String   @default("News")
-  published     Boolean  @default(false)
+  category      String    @default("News")
+  published     Boolean   @default(false)
   featuredImage String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  authorId      String   @db.ObjectId
-  author        User     @relation(fields: [authorId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  authorId      String    @db.ObjectId
+  author        User      @relation(fields: [authorId], references: [id])
+  comments      Comment[]
 }
+
+model Comment {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  content     String
+  authorName  String
+  createdAt   DateTime @default(now())
+  isApproved  Boolean  @default(true)
+  postId      String   @db.ObjectId
+  post        Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+

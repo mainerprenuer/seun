@@ -24,6 +24,12 @@ interface Post {
   author: {
     name: string | null;
   };
+  comments?: {
+    id: string;
+    authorName: string;
+    content: string;
+    createdAt: string;
+  }[];
 }
 
 export default function BlogPostContent({ post }: { post: Post }) {
@@ -32,6 +38,35 @@ export default function BlogPostContent({ post }: { post: Post }) {
   const [my, setMy] = useState(0);
   const [stars, setStars] = useState<{w:number,h:number,t:number,l:number,dur:string,del:string,lo:number,hi:number}[]>([]);
   const [copied, setCopied] = useState(false);
+  const [commentName, setCommentName] = useState("");
+  const [commentText, setCommentText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [comments, setComments] = useState(post.comments || []);
+
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!commentName.trim() || !commentText.trim()) return;
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(`/api/posts/${post.id}/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ authorName: commentName, content: commentText }),
+      });
+
+      if (res.ok) {
+        const newComment = await res.json();
+        setComments([newComment, ...comments]);
+        setCommentName("");
+        setCommentText("");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     // Generate stars only on client
@@ -254,6 +289,72 @@ export default function BlogPostContent({ post }: { post: Post }) {
                  </div>
               </div>
           </div>
+        </div>
+        
+        {/* COMMENTS SECTION */}
+        <div className="mt-24 pt-16 border-t border-periwinkle/10 rv">
+           <div className="flex items-center gap-2 mb-12">
+             <MessageSquare className="text-gold w-5 h-5" />
+             <h3 className="font-serif text-2xl font-medium text-white italic">Select Thoughts & Perspectives</h3>
+           </div>
+
+           <div className="space-y-8 mb-16">
+             {comments.length === 0 ? (
+               <p className="text-veil text-sm italic font-serif">Quiet table. Be the first to share your perspective below.</p>
+             ) : (
+               comments.map((comment, idx) => (
+                 <div key={comment.id || idx} className="bg-white/5 border border-white/5 rounded-2xl p-6 md:p-8 animate-riseIn" style={{ animationDelay: `${idx * 0.1}s` }}>
+                   <div className="flex items-center justify-between mb-4">
+                     <span className="font-serif text-gold font-medium">{comment.authorName}</span>
+                     <span className="text-[0.65rem] tracking-widest text-periwinkle uppercase opacity-60">
+                       {new Date(comment.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                     </span>
+                   </div>
+                   <p className="text-white/80 leading-relaxed font-serif">{comment.content}</p>
+                 </div>
+               ))
+             )}
+           </div>
+
+           {/* COMMENT FORM */}
+           <div className="bg-[#060d2a] border border-periwinkle/20 p-8 md:p-10 rounded-[2rem] shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gold/5 blur-[100px] rounded-full pointer-events-none" />
+              <h4 className="font-serif text-xl text-white mb-6">Leave Your Perspective</h4>
+              
+              <form onSubmit={handleCommentSubmit} className="space-y-6 relative z-10">
+                <div>
+                  <label htmlFor="name" className="block text-[0.65rem] tracking-[0.2em] uppercase text-periwinkle mb-2 font-bold">Your Name</label>
+                  <input
+                    id="name"
+                    type="text"
+                    required
+                    value={commentName}
+                    onChange={(e) => setCommentName(e.target.value)}
+                    className="w-full bg-white/5 border border-periwinkle/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold transition-colors font-serif"
+                    placeholder="E.g., A Curious Reader"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="comment" className="block text-[0.65rem] tracking-[0.2em] uppercase text-periwinkle mb-2 font-bold">Your Thought</label>
+                  <textarea
+                    id="comment"
+                    required
+                    rows={4}
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    className="w-full bg-white/5 border border-periwinkle/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold transition-colors font-serif resize-none"
+                    placeholder="What resonated with you?"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !commentName.trim() || !commentText.trim()}
+                  className="w-full md:w-auto px-8 py-3 rounded-full bg-gold/10 border border-gold/30 text-gold font-medium hover:bg-gold hover:text-[#060d2a] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? "Serving..." : "Serve Your Perspective ✦"}
+                </button>
+              </form>
+           </div>
         </div>
         
         {/* NEXT POST SUGGESTION */}
